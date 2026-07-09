@@ -8,22 +8,21 @@ class NearestCentroid:
 
     def fit(self, X, y):
         self.classes = np.unique(y)
-        self.centroids = np.array([
-            X[y == c].mean(axis=0) for c in self.classes
-        ])
+        self.centroids = np.array([X[y == c].mean(axis=0) for c in self.classes])
 
     def predict(self, X):
-        distances = np.array([
-            np.sqrt(((X - c) ** 2).sum(axis=1))
-            for c in self.centroids
-        ])
+        distances = np.array(
+            [np.sqrt(((X - c) ** 2).sum(axis=1)) for c in self.centroids]
+        )
         return self.classes[distances.argmin(axis=0)]
 
     def score(self, X, y):
         return np.mean(self.predict(X) == y)
 
 
-def generate_classification_data(n_per_class=100, n_features=2, separation=2.0, seed=42):
+def generate_classification_data(
+    n_per_class=100, n_features=2, separation=2.0, seed=42
+):
     rng = np.random.RandomState(seed)
     center_0 = np.ones(n_features) * (separation / 2)
     center_1 = np.ones(n_features) * (-separation / 2)
@@ -77,7 +76,7 @@ def demo_nearest_centroid():
     train_acc = clf.score(X_train, y_train)
     test_acc = clf.score(X_test, y_test)
 
-    print(f"Centroids:")
+    print("Centroids:")
     for i, c in enumerate(clf.classes):
         print(f"  Class {c}: [{clf.centroids[i][0]:.3f}, {clf.centroids[i][1]:.3f}]")
     print()
@@ -140,7 +139,9 @@ def demo_higher_dimensions():
     print("-" * 25)
 
     for d in dimensions:
-        X, y = generate_classification_data(n_per_class=200, n_features=d, separation=2.0)
+        X, y = generate_classification_data(
+            n_per_class=200, n_features=d, separation=2.0
+        )
         X_train, X_test, y_train, y_test = train_test_split(X, y)
 
         clf = NearestCentroid()
@@ -179,7 +180,7 @@ def demo_multiclass():
     clf.fit(X_train, y_train)
 
     print(f"3-class problem: {len(y)} samples")
-    print(f"Centroids:")
+    print("Centroids:")
     for i, c in enumerate(clf.classes):
         print(f"  Class {c}: [{clf.centroids[i][0]:.3f}, {clf.centroids[i][1]:.3f}]")
     print()
@@ -194,4 +195,3 @@ if __name__ == "__main__":
     demo_multiclass()
     print()
     print("All ML intro demos complete.")
-
