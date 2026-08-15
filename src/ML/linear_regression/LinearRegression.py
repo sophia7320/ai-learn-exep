@@ -2,7 +2,7 @@ import numpy as np
 
 
 class LinearRegression:
-    def __init__(self, learning_rate=0.05):
+    def __init__(self, learning_rate=0.001):
         self.w = 0.0
         self.b = 0.0
         self.learning_rate = learning_rate
@@ -30,3 +30,12 @@ class LinearRegression:
 
             if epoch % every_epoch == 0:
                 print(f"epoch {epoch} : cur_w = {self.w:.3f} , cur_b ={self.b:.3f}")
+
+    def r_square(self, X: np.ndarray, y: np.ndarray):
+        pred = self.predict(X)
+        y_mean = y.mean()
+
+        ss_res = np.sum((pred - y) ** 2)
+        ss_tot = np.sum((y - y_mean) ** 2)
+
+        return 1 - ss_res / ss_tot

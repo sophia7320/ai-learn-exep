@@ -27,6 +27,15 @@ class MultipleLinearRegression:
             if epoch % every_epoches == 0:
                 print(f"epoch {epoch}: cur_w = {self.weights}")
 
+    def r_square(self, X: np.ndarray, y: np.ndarray):
+        pred = self.predict(X)
+        y_mean = y.mean()
+
+        ss_res = np.sum((pred - y) ** 2)
+        ss_tot = np.sum((y - y_mean) ** 2)
+
+        return 1 - ss_res / ss_tot
+
 
 if __name__ == "__main__":
     x = np.array([[1, 2, 3], [1, 2, 3], [1, 2, 3]])

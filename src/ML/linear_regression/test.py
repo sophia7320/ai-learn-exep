@@ -26,7 +26,7 @@ def test_single_linear():
 
     y = X * (TRUE_W) + TRUE_B + rng.normal(0, 5, SAMPLE_N)
 
-    linear = LinearRegression(learning_rate=0.0025)
+    linear = LinearRegression(learning_rate=0.00175)
     nomal = LinearRegressionNomal()
 
     linear.fit(X, y, epochs=10000, every_epoch=1000)
@@ -35,6 +35,8 @@ def test_single_linear():
     print(f"gradient descent model_w = {linear.w:.3f} model_b = {linear.b:.3f}")
     nomal.fit(X, y)
     print(f"nomal equation   model_w = {nomal.w:.3f}  model_b = {nomal.b:.3f}")
+
+    print(f"r_squared = {nomal.r_square(X, y)}")
 
 
 # mutiple linear regression
@@ -45,7 +47,7 @@ def test_mutiple_linear():
     TRUE_W = np.array([1, 1, 4, 5, 1, 4])
 
     X = rng.uniform(0, 10, (SAMPLE_N, SAMPLE_D))
-    y = X @ TRUE_W + rng.normal(0, 20, SAMPLE_N)
+    y = X @ TRUE_W + rng.normal(0, 5, SAMPLE_N)
 
     multiple_nomal = MultipleLinearRegressionNomal()
     multiple_nomal.fit(X, y)
@@ -56,9 +58,10 @@ def test_mutiple_linear():
     # gradient descent
     multiple_gradient = MultipleLinearRegression(n_feature=6, learning_rate=0.002)
 
-    multiple_gradient.fit(X, y, every_epoches=5000)
+    multiple_gradient.fit(X, y, every_epoches=5000, epoches=10000)
     print(f"True_w = {TRUE_W}")
     print(f"multiple gradient   model_w = {multiple_gradient.weights}")
+    print(f"r_squared = {multiple_gradient.r_square(X, y)}")
 
 
 if __name__ == "__main__":
