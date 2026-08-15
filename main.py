@@ -1,5 +1,12 @@
+import numpy as np
+
+
 def main():
-    print("Hello from exep!")
+    rng = np.random.default_rng(42)
+
+    arr = rng.random(6)
+
+    print(arr)
 
 
 if __name__ == "__main__":
