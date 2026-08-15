@@ -12,13 +12,12 @@ class LinearRegression:
 
     def compute_gradient(self, X: np.ndarray, y: np.ndarray):
         pred = self.predict(X)
-        n = y.shape[0]
 
-        dw = (2 / n) * (X * (pred - y)).sum()
+        dw = 2 * (X * (pred - y)).mean()
+        db = 2 * (pred - y).mean()
         # dw = (2 / SAMPLE_N) * sum(
         #     x_act * (x_pred - y_act) for x_act, x_pred, y_act in zip(X, pred, y)
         # )
-        db = (2 / n) * (pred - y).sum()
         # db = (2 / SAMPLE_N) * sum(x_pred - y_act for x_pred, y_act in zip(pred, y))
 
         return dw, db
