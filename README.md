@@ -10,7 +10,8 @@
 |-------|------|------|
 | Phase 1: ML Fundamentals | 🔧 进行中 | 监督学习基础 |
 | → ML Intro | ✅ | Nearest Centroid 分类器 |
-| → Linear Regression | ✅ | 梯度下降从零实现 |
+| → Linear Regression | ✅ | 梯度下降 + 解析式（单变量 / 多变量） |
+| → Logistic Regression | ✅ | sigmoid + 梯度下降 + 阈值分类 |
 | → ... | 📅 | 后续推进中 |
 
 ## 目录结构
@@ -18,19 +19,38 @@
 ```
 ai-learn-exep/
 ├── src/
+│   ├── util/
+│   │   └── Timer.py                    # 计时工具
 │   └── ML/
 │       ├── intro/
-│       │   └── ml_intro.py           # Nearest Centroid 分类器
-│       └── linear_regression/
-│           └── LinearRegression.py   # 线性回归（梯度下降）
+│       │   └── ml_intro.py             # Nearest Centroid 分类器
+│       ├── linear_regression/
+│       │   ├── LinearRegression.py             # 单变量 · 梯度下降
+│       │   ├── LinearRegressionNomal.py        # 单变量 · 解析式
+│       │   ├── MultipleLinearRegression.py     # 多变量 · 梯度下降
+│       │   ├── MultipleLinearRegressionNomal.py# 多变量 · 解析式
+│       │   └── test.py                 # 四种实现对比 + R² 评估
+│       └── LogisticRegression/
+│           ├── LogisticRegression.py   # sigmoid + 梯度下降
+│           └── test.py                 # 二分类 + train/test 准确率
 ├── main.py
 ├── pyproject.toml
 └── README.md
 ```
 
-## 运行
+## 测试命令
 
 ```bash
-uv run python src/ML/intro/ml_intro.py
-uv run python src/ML/linear_regression/LinearRegression.py
+cd ~/Desktop/learning/ai-learn-exep
+
+# ML Intro（Nearest Centroid 演示）
+uv run python -m src.ML.intro.ml_intro
+
+# 线性回归（梯度下降 vs 解析式，单变量 + 多变量）
+uv run python -m src.ML.linear_regression.test
+
+# 逻辑回归（二分类，含计时）
+uv run python -m src.ML.LogisticRegression.test
 ```
+
+> 使用 `python -m` 模块方式运行（相对导入要求包上下文，不能直接 `python xxx.py`）。
