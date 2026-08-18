@@ -1,8 +1,8 @@
 import numpy as np
-from LinearRegression import LinearRegression
-from LinearRegressionNomal import LinearRegressionNomal
-from MultipleLinearRegression import MultipleLinearRegression
-from MultipleLinearRegressionNomal import MultipleLinearRegressionNomal
+from .LinearRegression import LinearRegression
+from .LinearRegressionNomal import LinearRegressionNomal
+from .MultipleLinearRegression import MultipleLinearRegression
+from .MultipleLinearRegressionNomal import MultipleLinearRegressionNomal
 
 np.set_printoptions(precision=2)
 rng = np.random.default_rng(42)

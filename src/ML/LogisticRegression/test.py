@@ -1,5 +1,6 @@
 import numpy as np
-from LogisticRegression import LogisticRegression
+from .LogisticRegression import LogisticRegression
+from ...util.Timer import Timer
 
 rng = np.random.default_rng(42)
 
@@ -36,8 +37,11 @@ def test():
 
     model = LogisticRegression()
 
+    timer = Timer()
+    timer.start()
     print("\n=== Training Logistic Regression ===")
     model.fit(X_train, y_train, epochs=40001, print_every=10000)
+    print(f"time cost : {timer.stop():.4f}s")
 
     print(f"\nTrain accuracy: {model.accuracy(X_train, y_train):.4f}")
     print(f"Test accuracy:  {model.accuracy(X_test, y_test):.4f}")
