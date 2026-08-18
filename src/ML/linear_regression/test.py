@@ -3,16 +3,23 @@ from .LinearRegression import LinearRegression
 from .LinearRegressionNomal import LinearRegressionNomal
 from .MultipleLinearRegression import MultipleLinearRegression
 from .MultipleLinearRegressionNomal import MultipleLinearRegressionNomal
+from ...util.Timer import Timer
 
 np.set_printoptions(precision=2)
 rng = np.random.default_rng(42)
 
 
 def main():
+    timer = Timer()
     if True:
+        timer.start()
         test_single_linear()
+        print(f"time cost : {timer.stop():.4f}s")
+        print()
     if True:
+        timer.start()
         test_mutiple_linear()
+        print(f"time cost : {timer.stop():.4f}s")
 
 
 def test_single_linear():
