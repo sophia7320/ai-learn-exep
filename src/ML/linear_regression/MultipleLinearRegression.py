@@ -17,10 +17,11 @@ class MultipleLinearRegression:
         epoches: int = 50000,
         every_epoches: int = 10000,
     ):
+        n = X.shape[0]
         for epoch in range(epoches):
             pred = self.predict(X)
 
-            dw = np.mean(X * (pred - y)[:, np.newaxis], axis=0) * 2 * self.learning_rate
+            dw = X.T @ (pred - y) / n * 2 * self.learning_rate
 
             self.weights -= dw
 

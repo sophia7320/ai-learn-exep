@@ -58,7 +58,7 @@ def test_mutiple_linear():
     # gradient descent
     multiple_gradient = MultipleLinearRegression(n_feature=6, learning_rate=0.002)
 
-    multiple_gradient.fit(X, y, every_epoches=5000, epoches=10000)
+    multiple_gradient.fit(X, y, every_epoches=5000, epoches=10001)
     print(f"True_w = {TRUE_W}")
     print(f"multiple gradient   model_w = {multiple_gradient.weights}")
     print(f"r_squared = {multiple_gradient.r_square(X, y)}")
