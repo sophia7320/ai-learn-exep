@@ -1,10 +1,12 @@
 import numpy as np
-from .LogisticRegression import LogisticRegression
+
 from ...util.Timer import Timer
+from .ClassificationMetrics import ClassificationMetrics
+from .LogisticRegression import LogisticRegression
 
 rng = np.random.default_rng(42)
 
-N = 2000
+N = 20000
 
 
 def generate_data(N):
@@ -46,6 +48,12 @@ def test():
     print(f"\nTrain accuracy: {model.accuracy(X_train, y_train):.4f}")
     print(f"Test accuracy:  {model.accuracy(X_test, y_test):.4f}")
     print(f"Weights: [{model.weights}]")
+
+    y_pred_test = model.predict(X_test)
+    print("\n=== Classification Report (Test Set) ===")
+    metrics = ClassificationMetrics(y_test, y_pred_test)
+    metrics.print_confusion_matrix()
+    metrics.print_report()
 
 
 def main():

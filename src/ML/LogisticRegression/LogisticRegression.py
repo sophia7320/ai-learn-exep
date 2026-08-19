@@ -13,11 +13,11 @@ class LogisticRegression:
         self.weights = None
         self.learning_rate = learning_rate
 
-    def predict(self, X: np.ndarray, threhold: float = 0.5):
+    def predict(self, X: np.ndarray, threshold: float = 0.5):
         z = X @ self.weights
         p = sigmoid(z)
 
-        return np.where(p >= threhold, 1, 0)
+        return np.where(p >= threshold, 1, 0)
 
     def fit(self, X: np.ndarray, y: np.ndarray, epochs=1000, print_every=200):
         self.weights = np.zeros(X.shape[1])
