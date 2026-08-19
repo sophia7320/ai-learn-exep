@@ -51,6 +51,10 @@ uv run python -m src.ML.linear_regression.test
 
 # 逻辑回归（二分类，含计时）
 uv run python -m src.ML.LogisticRegression.test
+
+# 决策树和随机森林
+uv run python -m src.ML.desicion_tree.test
+
 ```
 
 > 使用 `python -m` 模块方式运行（相对导入要求包上下文，不能直接 `python xxx.py`）。

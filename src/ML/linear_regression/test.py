@@ -1,9 +1,10 @@
 import numpy as np
+
+from ...util.Timer import Timer
 from .LinearRegression import LinearRegression
 from .LinearRegressionNomal import LinearRegressionNomal
 from .MultipleLinearRegression import MultipleLinearRegression
 from .MultipleLinearRegressionNomal import MultipleLinearRegressionNomal
-from ...util.Timer import Timer
 
 np.set_printoptions(precision=2)
 rng = np.random.default_rng(42)

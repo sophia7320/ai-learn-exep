@@ -6,7 +6,7 @@ from .LogisticRegression import LogisticRegression
 
 rng = np.random.default_rng(42)
 
-N = 20000
+N = 2000
 
 
 def generate_data(N):
@@ -37,12 +37,12 @@ def test():
     X_train, X_test = X[:split], X[split:]
     y_train, y_test = y[:split], y[split:]
 
-    model = LogisticRegression()
+    model = LogisticRegression(learning_rate=1)
 
     timer = Timer()
     timer.start()
     print("\n=== Training Logistic Regression ===")
-    model.fit(X_train, y_train, epochs=40001, print_every=10000)
+    model.fit(X_train, y_train, epochs=100001, print_every=10000)
     print(f"time cost : {timer.stop():.4f}s")
 
     print(f"\nTrain accuracy: {model.accuracy(X_train, y_train):.4f}")
