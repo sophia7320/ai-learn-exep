@@ -133,6 +133,9 @@ class DecisionTree:
         elif callable(self.max_features):
             maxf = self.max_features(self.n_features)
             feature_indices = rng.permutation(self.n_features)[:maxf]
+        elif self.max_features == "sqrt":
+            maxf = int(np.sqrt(self.n_features))
+            feature_indices = rng.permutation(self.n_features)[:maxf]
         else:
             feature_indices = rng.permutation(self.n_features)
 

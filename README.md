@@ -53,7 +53,7 @@ uv run python -m src.ML.linear_regression.test
 uv run python -m src.ML.LogisticRegression.test
 
 # 决策树和随机森林
-uv run python -m src.ML.desicion_tree.test
+uv run python -m src.ML.decision_tree.test
 
 ```
 

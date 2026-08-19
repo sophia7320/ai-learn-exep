@@ -1,6 +1,6 @@
 import numpy as np
 
-from .desicionTree import DecisionTree, rng
+from .decisionTree import DecisionTree, rng
 
 
 class RandomForest:
@@ -24,7 +24,7 @@ class RandomForest:
     def fit(self, X: np.ndarray, y: np.ndarray):
         n_sample = y.shape[0]
 
-        for _ in range(n_sample):
+        for _ in range(self.n_trees):
             indices = rng.integers(0, n_sample, n_sample)
             X_boot, y_boot = X[indices], y[indices]
 
@@ -40,6 +40,7 @@ class RandomForest:
         self.feature_importances_ = np.array(
             [tree.feature_importances for tree in self.trees]
         ).mean(axis=0)
+        self.feature_importances_ /= self.feature_importances_.sum()
 
     def predict(self, X):
         all_preds = np.array([tree.predict(X) for tree in self.trees])
