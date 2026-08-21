@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.linear_model import Perceptron as SkPerceptron
 
-from .two_layer_network_ import TwoLayerNetwork
+from .two_layer_network import TwoLayerNetwork
 
 np.set_printoptions(precision=2, suppress=False)
 
