@@ -65,7 +65,7 @@ def circle_test():
 
 
 def test():
-    # xor_test()
+    xor_test()
     circle_test()
 
 

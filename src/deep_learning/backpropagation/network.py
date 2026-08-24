@@ -1,3 +1,5 @@
+import random
+
 from .layer import Layer
 from .value import Value
 
@@ -13,8 +15,10 @@ class Network:
         self.layers = []
         self.learning_rate = learning_rate
 
+        random.seed(random_state)
+
         for i in range(len(sizes) - 1):
-            self.layers.append(Layer(sizes[i], sizes[i + 1], random_state=random_state))
+            self.layers.append(Layer(sizes[i], sizes[i + 1]))
 
     def __call__(self, x):
         current = x

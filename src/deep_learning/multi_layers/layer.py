@@ -37,9 +37,9 @@ class Layer:
             raise ValueError(
                 f"input value error ,input shape is {X.shape} , n_inputs = {self.n_inputs}"
             )
-        result = self.sigmoid(self.weights @ X.T)
 
+        result = self.weights @ X.T
         if result.ndim == 1:
-            return result + self.biases
+            return self.sigmoid(result + self.biases)
         else:
-            return (result + self.biases[:, np.newaxis]).T
+            return self.sigmoid(result + self.biases[:, np.newaxis]).T

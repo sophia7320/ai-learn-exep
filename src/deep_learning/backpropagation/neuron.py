@@ -4,9 +4,7 @@ from .value import Value
 
 
 class Neuron:
-    def __init__(self, n_inputs, weights=None, bias=None, random_state=42):
-        random.seed(random_state)
-
+    def __init__(self, n_inputs, weights=None, bias=None):
         self.n_inputs = n_inputs
 
         scale = (2.0 / self.n_inputs) ** 0.5

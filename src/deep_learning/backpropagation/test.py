@@ -113,8 +113,8 @@ def pyt_circle():
 
 if __name__ == "__main__":
     print("=====================xor test=========================")
-    # xor_test()
+    xor_test()
     print("=====================circle test======================")
-    # circle_test()
+    circle_test()
     print("=====================circle torch=====================")
     pyt_circle()

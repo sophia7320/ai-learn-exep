@@ -2,11 +2,9 @@ from .neuron import Neuron
 
 
 class Layer:
-    def __init__(self, n_inputs: int, n_neurons: int, random_state=42):
+    def __init__(self, n_inputs: int, n_neurons: int):
 
-        self.neurons = [
-            Neuron(n_inputs, random_state=random_state) for _ in range(n_neurons)
-        ]
+        self.neurons = [Neuron(n_inputs) for _ in range(n_neurons)]
 
     def __call__(self, x):
         res = [neuron(x) for neuron in self.neurons]
