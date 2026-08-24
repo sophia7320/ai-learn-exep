@@ -7,15 +7,15 @@ class TwoLayerNetwork:
         self.rng = np.random.default_rng(random_state)
 
         # failed
-        self.w_hidden = np.hstack(
-            [self.rng.uniform(-1, 1, 3)[:, np.newaxis] for _ in range(2)]
-        )
-        self.w_output = self.rng.uniform(-1, 1, 3)
-
         # self.w_hidden = np.hstack(
-        #     [self.rng.uniform(-0.5, 0.5, 3)[:, np.newaxis] for _ in range(2)]
+        #     [self.rng.uniform(-1, 1, 3)[:, np.newaxis] for _ in range(2)]
         # )
-        # self.w_output = self.rng.uniform(-0.5, 0.5, 3)
+        # self.w_output = self.rng.uniform(-1, 1, 3)
+
+        self.w_hidden = np.hstack(
+            [self.rng.uniform(-0.5, 0.5, 3)[:, np.newaxis] for _ in range(2)]
+        )
+        self.w_output = self.rng.uniform(-0.5, 0.5, 3)
 
         self.hidden_out = None
 

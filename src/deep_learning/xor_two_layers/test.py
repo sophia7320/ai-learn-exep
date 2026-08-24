@@ -16,8 +16,8 @@ def test():
     print(clf.predict(X))
 
     print("===========my xor=================")
-    net = TwoLayerNetwork(learning_rate=2.0)
-    net.fit(X, y, epochs=10000, show=True)
+    net = TwoLayerNetwork(learning_rate=0.1)
+    net.fit(X, y, epochs=100000, show=False)
 
     pred = net.predict(X)
 

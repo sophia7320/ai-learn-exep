@@ -72,6 +72,9 @@ uv run python -m src.deep_learning.xor_two_layers.test
 
 # 多层网络
 uv run python -m src.deep_learning.multi_layers.test
+
+# 自动微分机
+uv run python -m src.deep_learning.backpropagation.test
 ```
 
 > 使用 `python -m` 模块方式运行（相对导入要求包上下文，不能直接 `python xxx.py`）。
