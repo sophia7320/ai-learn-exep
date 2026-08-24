@@ -6,10 +6,16 @@ class TwoLayerNetwork:
         self.learning_rate = learning_rate
         self.rng = np.random.default_rng(random_state)
 
+        # failed
         self.w_hidden = np.hstack(
-            [self.rng.uniform(-0.5, 0.5, 3)[:, np.newaxis] for _ in range(2)]
+            [self.rng.uniform(-1, 1, 3)[:, np.newaxis] for _ in range(2)]
         )
-        self.w_output = self.rng.uniform(-0.5, 0.5, 3)
+        self.w_output = self.rng.uniform(-1, 1, 3)
+
+        # self.w_hidden = np.hstack(
+        #     [self.rng.uniform(-0.5, 0.5, 3)[:, np.newaxis] for _ in range(2)]
+        # )
+        # self.w_output = self.rng.uniform(-0.5, 0.5, 3)
 
         self.hidden_out = None
 
@@ -22,7 +28,7 @@ class TwoLayerNetwork:
         X = np.hstack([np.ones(n_sample)[:, np.newaxis], X])
 
         X_out_h_raw = X @ self.w_hidden
-        self.hidden_out = np.apply_along_axis(self.sigmoid, axis=1, arr=X_out_h_raw)
+        self.hidden_out = self.sigmoid(X_out_h_raw)
 
         X_out_raw = (
             np.hstack([np.ones(n_sample)[:, np.newaxis], self.hidden_out])
@@ -63,3 +69,7 @@ class TwoLayerNetwork:
                     f"epoch {epoch} \nw_hidden = \n{self.w_hidden} w_out = {self.w_output}"
                 )
                 print(f"cur_pred : {pred}")
+                loss = -(1 / n_sample) * np.sum(
+                    y * np.log2(pred) + (1 - y) * np.log2(1 - pred)
+                )
+                print(f"loss = {loss}")

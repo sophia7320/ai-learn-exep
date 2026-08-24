@@ -10,14 +10,14 @@ def test():
     X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
     y = np.array([0, 1, 1, 0])
 
-    print("==========sklearn xor ===========")
+    print("==========sklearn xor (single neuron) ===========")
     clf = SkPerceptron(max_iter=100, tol=1e-3)
     clf.fit(X, y)
     print(clf.predict(X))
 
     print("===========my xor=================")
     net = TwoLayerNetwork(learning_rate=2.0)
-    net.fit(X, y, epochs=100000, show=True)
+    net.fit(X, y, epochs=10000, show=True)
 
     pred = net.predict(X)
 
