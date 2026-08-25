@@ -18,6 +18,7 @@
 | → Two-Layer Network | ✅ | 手写反向传播，解决 XOR（对照线性模型不可分） |
 | → Multi-Layer Network | 🔧 | 矩阵化多层前向 + 手搓 XOR 权重演示（bias 位置待修） |
 | → Autograd Engine | ✅ | `Value` + 拓扑排序反向传播（micrograd 风格），XOR 收敛 |
+| → Activation & Loss | ✅ | 参数化网络（激活/损失可注入）+ 6 种激活函数对比实验 |
 | → ... | 📅 | 后续推进中 |
 
 ## 目录结构
@@ -58,6 +59,10 @@ ai-learn-exep/
 │           ├── layer.py                # 层（神经元组合）
 │           ├── network.py              # 网络 + MSE 训练循环
 │           └── test.py                 # XOR / 圆环 + PyTorch 对照
+│       └── activation_and_loss/        # 激活函数 & 损失函数对比实验
+│           ├── network.py              # 参数化单隐层网络（激活/损失注入）
+│           ├── gelu.py                 # GELU / Swish 及其导数可视化
+│           └── test.py                 # 梯度死区扫描 + 圆数据 MSE/BCE 对照
 ├── main.py
 ├── pyproject.toml                      # uv 项目配置（numpy / sklearn / torch）
 └── README.md
@@ -66,7 +71,7 @@ ai-learn-exep/
 ## 测试命令
 
 ```bash
-cd ~/Desktop/ai-learning/ai-learn-exep
+cd ~/Desktop/learning/ai-learn-exep
 
 # ML Intro（Nearest Centroid 演示）
 uv run python -m src.ML.intro.ml_intro
@@ -88,6 +93,9 @@ uv run python -m src.deep_learning.multi_layers.test
 
 # autograd 引擎（XOR / 圆环 + PyTorch 对照）
 uv run python -m src.deep_learning.backpropagation.test
+
+# 激活函数 & 损失函数（梯度死区扫描 + 圆数据对照实验）
+uv run python -m src.deep_learning.activation_and_loss.test
 ```
 
 > 使用 `python -m` 模块方式运行（相对导入要求包上下文，不能直接 `python xxx.py`）。
@@ -96,5 +104,7 @@ uv run python -m src.deep_learning.backpropagation.test
 
 - **截距**：单变量模型自带 `b`；多变量模型由调用方显式添加全 1 列（如 `np.hstack([np.ones((n, 1)), X])`），列位置与 `predict` 保持一致
 - **神经元偏置**：bias 必须在激活函数**之前**：`σ(Wx + b)`，不是 `σ(Wx) + b`
+- **激活函数导数**：反向传播时 `activation_deriv` 必须喂**激活前**的值（pre-activation），forward 中需缓存原始输入；输出层用 `sigmoid + BCE` 配套（BCE 梯度抵消 sigmoid 饱和项），避免 `sigmoid + MSE` 的梯度消失
+- **数据泄漏**：train/test 拆分后，训练循环只能喂训练集——`fit(X_train, y_train)`，测试集碰过之后 test accuracy 无效
 - **验证方式**：每个模型都与 scikit-learn / PyTorch 对应实现对照（准确率 / 特征重要性等）
 - **随机种子**：测试数据固定 `default_rng(42)`；模型内部通过 `random_state` 参数控制，且种子只应在构造时设置一次（不要在循环内重置）
