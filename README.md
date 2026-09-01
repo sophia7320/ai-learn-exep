@@ -19,6 +19,7 @@
 | → Multi-Layer Network | 🔧 | 矩阵化多层前向 + 手搓 XOR 权重演示（bias 位置待修） |
 | → Autograd Engine | ✅ | `Value` + 拓扑排序反向传播（micrograd 风格），XOR 收敛 |
 | → Activation & Loss | ✅ | 参数化网络（激活/损失可注入）+ 6 种激活函数对比实验 |
+| → RMSProp Optimizer | ✅ | EMA(g²) 自适应步长 + 病态曲面轨迹 / 有效步长对比 |
 | → ... | 📅 | 后续推进中 |
 
 ## 目录结构
@@ -53,16 +54,21 @@ ai-learn-exep/
 │       │   ├── layer.py                # 权重矩阵 + sigmoid 层
 │       │   ├── network.py              # 层组合 + predict
 │       │   └── test.py                 # 手搓 XOR 权重 + 圆环数据
-│       └── backpropagation/            # 自建 autograd 引擎（micrograd 风格）
-│           ├── value.py                # Value：自动求导 + 拓扑排序反传
-│           ├── neuron.py               # 神经元（Value 组合）
-│           ├── layer.py                # 层（神经元组合）
-│           ├── network.py              # 网络 + MSE 训练循环
-│           └── test.py                 # XOR / 圆环 + PyTorch 对照
-│       └── activation_and_loss/        # 激活函数 & 损失函数对比实验
-│           ├── network.py              # 参数化单隐层网络（激活/损失注入）
-│           ├── gelu.py                 # GELU / Swish 及其导数可视化
-│           └── test.py                 # 梯度死区扫描 + 圆数据 MSE/BCE 对照
+│       ├── backpropagation/            # 自建 autograd 引擎（micrograd 风格）
+│       │   ├── value.py                # Value：自动求导 + 拓扑排序反传
+│       │   ├── neuron.py               # 神经元（Value 组合）
+│       │   ├── layer.py                # 层（神经元组合）
+│       │   ├── network.py              # 网络 + MSE 训练循环
+│       │   └── test.py                 # XOR / 圆环 + PyTorch 对照
+│       ├── activation_and_loss/        # 激活函数 & 损失函数对比实验
+│       │   ├── network.py              # 参数化单隐层网络（激活/损失注入）
+│       │   ├── gelu.py                 # GELU / Swish 及其导数可视化
+│       │   └── test.py                 # 梯度死区扫描 + 圆数据 MSE/BCE 对照
+│       ├── softmax/                    # softmax 回归（FashionMNIST + PyTorch）
+│       │   ├── model.py                # 线性层 + CrossEntropyLoss 训练
+│       │   └── test.py                 # FashionMNIST 分类
+│       └── optimizer/                  # 优化器
+│           └── rmsprop.py              # RMSProp 实现 + 病态曲面轨迹图
 ├── main.py
 ├── pyproject.toml                      # uv 项目配置（numpy / sklearn / torch）
 └── README.md
@@ -94,8 +100,14 @@ uv run python -m src.deep_learning.multi_layers.test
 # autograd 引擎（XOR / 圆环 + PyTorch 对照）
 uv run python -m src.deep_learning.backpropagation.test
 
+#softmax img
+uv run python -m src.deep_learning.softmax.test
+
 # 激活函数 & 损失函数（梯度死区扫描 + 圆数据对照实验）
 uv run python -m src.deep_learning.activation_and_loss.test
+
+# RMSProp 优化器（病态曲面轨迹 + 有效步长对比，图保存到 log/rmsprop_demo.png）
+uv run python -m src.deep_learning.optimizer.rmsprop
 ```
 
 > 使用 `python -m` 模块方式运行（相对导入要求包上下文，不能直接 `python xxx.py`）。

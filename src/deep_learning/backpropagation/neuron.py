@@ -14,7 +14,7 @@ class Neuron:
                 Value(random.uniform(-scale, scale)) for _ in range(self.n_inputs)
             ]
         else:
-            self.weights = None
+            self.weights = weights
 
         if bias is None:
             self.bias = Value(0)

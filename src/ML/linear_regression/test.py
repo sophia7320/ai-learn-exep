@@ -1,6 +1,7 @@
 import numpy as np
 
-from ...util.Timer import Timer
+from src.util.timer import Timer
+
 from .LinearRegression import LinearRegression
 from .LinearRegressionNomal import LinearRegressionNomal
 from .MultipleLinearRegression import MultipleLinearRegression

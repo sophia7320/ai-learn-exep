@@ -1,6 +1,7 @@
 import numpy as np
 
-from ...util.Timer import Timer
+from src.util.timer import Timer
+
 from .ClassificationMetrics import ClassificationMetrics
 from .LogisticRegression import LogisticRegression
 
