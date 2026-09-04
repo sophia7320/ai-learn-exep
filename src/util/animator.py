@@ -1,6 +1,7 @@
 import time
-import numpy as np
+
 import matplotlib.pyplot as plt  # 👈 纯 Python 脚本的标准导入
+import numpy as np
 
 
 class NativeAnimator:
