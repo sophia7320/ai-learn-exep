@@ -6,12 +6,17 @@ class Optimizer:
         self.parameters = parameters
         self.lr = lr
 
+        self.step = 0
+
     def step(self):
-        return NotImplementedError()
+        self.step += 1
 
     def zero_grad(self):
         for param, param_d, isWeight in self.parameters:
-            param_d[:] = np.zeros_like(param_d)
+            param_d.fill(0)
+
+    def get_lr(self):
+        return self.lr
 
     def set_lr(self, lr):
         self.lr = lr

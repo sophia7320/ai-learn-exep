@@ -108,6 +108,9 @@ uv run python -m src.deep_learning.activation_and_loss.test
 
 # RMSProp 优化器（病态曲面轨迹 + 有效步长对比，图保存到 log/rmsprop_demo.png）
 uv run python -m src.deep_learning.optimizer.rmsprop
+
+# mini_frame
+uv run python -m src.deep_learning.mini_frame.test
 ```
 
 > 使用 `python -m` 模块方式运行（相对导入要求包上下文，不能直接 `python xxx.py`）。

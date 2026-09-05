@@ -24,7 +24,4 @@ def main():
 
 
 if __name__ == "__main__":
-    base = "https://www.bilibili.com/video/BV16jyuBBEom?spm_id_from=333.788.videopod.episodes&vd_source=15e6728bdde45c56e241526a31856a24"
-    with open("urls.txt", "w") as f:
-        f.write(base + "\n")
-        f.writelines(base + "&p=" + str(i) + "\n" for i in range(2, 143))
+    print("开始")
