@@ -11,7 +11,3 @@ class Warmup(Schedule):
 
     def get_lr(self):
         return self.max_lr * min(self.step / self.warmup_steps, 1.0)
-
-    def step(self):
-        self.step += 1
-        self.optimizer.set_lr()

@@ -27,4 +27,4 @@ class AdamW(Optimizer):
             m_hat = self.m / (1 - self.betas[0] ** self.step)
             v_hat = self.v / (1 - self.betas[1] ** self.step)
 
-            param[:] = param - self.lr * m_hat / (np.sqrt(v_hat) + self.eps)
+            param -= self.lr * m_hat / (np.sqrt(v_hat) + self.eps)
