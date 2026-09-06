@@ -5,6 +5,7 @@ from ..model import Model
 
 class Dropout(Model):
     def __init__(self, p, rng=None):
+        super().__init__()
         self.p = p
 
         self.rng = rng if rng is not None else np.random.default_rng(42)
