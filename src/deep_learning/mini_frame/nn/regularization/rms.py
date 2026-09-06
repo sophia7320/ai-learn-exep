@@ -17,7 +17,7 @@ class RMS(Model):
     def forward(self, X):
         self.X = X
         self.squar_mean = np.mean(X**2, axis=1, keepdims=True)
-        self.rms = np.sqrt(self.var + self.eps)
+        self.rms = np.sqrt(self.squar_mean + self.eps)
 
         self.X_hat = X / self.rms
         return self.gamma * self.X_hat

@@ -3,6 +3,7 @@ import numpy as np
 from . import nn, optim
 from .daraloader import DataLoader
 from .loss_fn import BCELoss
+from .nn.regularization import RMS, BatchNormalization, Dropout, LayerNorm
 from .schedule import Cosine
 
 rng = np.random.default_rng(42)
@@ -19,8 +20,10 @@ def train():
     model = nn.Sequential(
         nn.Linear(2, 16, rng=rng),
         nn.GeLU(),
+        LayerNorm(),
         nn.Linear(16, 16, rng=rng),
         nn.GeLU(),
+        Dropout(0.5, rng=rng),
         nn.Linear(16, 8, rng=rng),
         nn.GeLU(),
         nn.Linear(8, 1, rng=rng),
@@ -39,11 +42,11 @@ def train():
     X_train, y_train = X[:split], y[:split]
     X_test, y_test = X[split:], y[split:]
 
-    loader = DataLoader((X_train, y_train), batch_size=16, shuffle=True)
+    loader = DataLoader((X_train, y_train), batch_size=64, shuffle=True)
 
     model.train()
 
-    for epoch in range(401):
+    for epoch in range(801):
         total_loss = 0
         total_correct = 0
         total_samples = 0

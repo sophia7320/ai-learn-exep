@@ -4,9 +4,9 @@ from .schedule import Schedule
 
 
 class Warmup(Schedule):
-    def __init__(self, optimizer, warmup_steps):
+    def __init__(self, optimizer, warmup_steps=1000):
         super().__init__(optimizer)
-        self.warmup_steps = 1000
+        self.warmup_steps = warmup_steps
         self.max_lr = self.optimizer.get_lr()
 
     def get_lr(self):
