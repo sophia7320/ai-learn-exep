@@ -26,18 +26,21 @@ class BatchNormalization(Model):
         self.X = X
         if self.training:
             # shape = (1, fan_in)
-            self.moving_mean[:] = (
-                np.mean(X, axis=0, keepdims=True) * 0.1 + self.moving_mean * 0.9
-            )
-            self.moving_std[:] = (
-                np.sqrt(np.var(X, axis=0, keepdims=True) + self.eps) * 0.1
-                + self.moving_std * 0.9
-            )
+            self.moving_mean[:] = np.mean(X, axis=0, keepdims=True)
+
+            self.moving_std[:] = np.sqrt(np.var(X, axis=0, keepdims=True) + self.eps)
 
             self.x_hat = (X - self.moving_mean) / self.moving_std
             return self.x_hat * self.gamma + self.beta
         else:
-            return (X - self.moving_mean) / self.moving_std * self.gamma + self.beta
+            moving_mean = (
+                np.mean(self.X, axis=0, keepdims=True) * 0.1 + self.moving_mean * 0.9
+            )
+            moving_std = (
+                np.sqrt(np.var(self.X, axis=0, keepdims=True) + self.eps) * 0.1
+                + self.moving_std * 0.9
+            )
+            return (X - moving_mean) / moving_std * self.gamma + self.beta
 
     def backward(self, grad):
         # n = grad.shape[0]

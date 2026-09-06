@@ -26,6 +26,6 @@ class Dropout(Model):
     def forward(self, X):
         if self.training:
             self.mask = self.rng.binomial(1, 1 - self.p, size=X.shape).astype(float)
-            return X * self.mask
+            return X * self.mask / (1 - self.p)
         else:
             return X
