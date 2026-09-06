@@ -14,6 +14,6 @@ class Cosine(Schedule):
         return (
             self.eta_min
             + (self.eta_max - self.eta_min)
-            * (1 + np.cos(np.pi * self.step / self.total_steps))
+            * (1 + np.cos(np.pi * self.steps / self.total_steps))
             / 2
         )

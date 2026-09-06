@@ -8,4 +8,4 @@ class SGD(Optimizer):
     def step(self):
         super().step()
         for param, grad, _ in self.parameters:
-            param -= self.lr * grad
+            param[:] -= self.lr * grad

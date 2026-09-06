@@ -12,4 +12,4 @@ class StepDecay(Schedule):
         self.base_lr = self.optimizer.get_lr()
 
     def get_lr(self):
-        return self.base_lr * self.gamma ** (self.step // self.step_size)
+        return self.base_lr * self.gamma ** (self.steps // self.step_size)

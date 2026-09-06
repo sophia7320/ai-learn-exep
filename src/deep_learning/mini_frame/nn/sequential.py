@@ -14,7 +14,11 @@ class Sequential(Model):
         return X
 
     def backward(self, grad):
+        # print(self.models)
+        # i = 0
         for model in reversed(self.models):
+            # print(i, grad.shape)
+            # i += 1
             grad = model.backward(grad)
         return grad
 

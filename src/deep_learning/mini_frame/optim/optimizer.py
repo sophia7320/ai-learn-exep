@@ -6,10 +6,10 @@ class Optimizer:
         self.parameters = parameters
         self.lr = lr
 
-        self.step = 0
+        self.steps = 0
 
     def step(self):
-        self.step += 1
+        self.steps += 1
 
     def zero_grad(self):
         for param, param_d, isWeight in self.parameters:

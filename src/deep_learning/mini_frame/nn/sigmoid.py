@@ -11,9 +11,12 @@ class Sigmoid(Model):
         return self.forward(X)
 
     def forward(self, X):
-        self.X = X
-        return 1.0 / (1.0 + np.exp(-X))
+        self.X = np.clip(X, -500, 500)
+        self.s = 1.0 / (1.0 + np.exp(-self.X))
+        return self.s
 
     def backward(self, grad):
-        s = self.forward(self.X)
+        # print(grad)
+        grad = grad.reshape(self.X.shape)
+        s = self.s
         return grad * s * (1 - s)

@@ -2,6 +2,8 @@ import numpy as np
 
 from . import nn, optim
 from .daraloader import DataLoader
+from .loss_fn import BCELoss
+from .schedule import Cosine
 
 rng = np.random.default_rng(42)
 
@@ -15,68 +17,80 @@ def make_circle_data(n=500):
 def train():
 
     model = nn.Sequential(
-        nn.Linear(2, 16),
-        nn.ReLU(),
-        nn.Linear(16, 16),
-        nn.ReLU(),
-        nn.Linear(16, 8),
-        nn.ReLU(),
-        nn.Linear(8, 1),
+        nn.Linear(2, 16, rng=rng),
+        nn.GeLU(),
+        nn.Linear(16, 16, rng=rng),
+        nn.GeLU(),
+        nn.Linear(16, 8, rng=rng),
+        nn.GeLU(),
+        nn.Linear(8, 1, rng=rng),
         nn.Sigmoid(),
     )
 
-    criterion = BCELoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.01)
+    # criterion = BCELoss(reduction="sum")
+    criterion = BCELoss(reduction="sum")
+    optimizer = optim.AdamW(model.parameters(), lr=0.01)
+    # optimizer = optim.SGD(model.parameters(), lr=0.05)
 
-    data = make_circle_data(500)
-    split = int(len(data) * 0.8)
-    train_data = data[:split]
-    test_data = data[split:]
+    scheduler = Cosine(optimizer, total_steps=20000)
 
-    loader = DataLoader(train_data, batch_size=16, shuffle=True)
+    X, y = make_circle_data(500)
+    split = int(len(y) * 0.8)
+    X_train, y_train = X[:split], y[:split]
+    X_test, y_test = X[split:], y[split:]
+
+    loader = DataLoader((X_train, y_train), batch_size=16, shuffle=True)
 
     model.train()
 
-    for epoch in range(100):
+    for epoch in range(401):
         total_loss = 0
         total_correct = 0
         total_samples = 0
 
         for batch_inputs, batch_targets in loader:
-            batch_loss = 0
-            for x, t in zip(batch_inputs, batch_targets):
-                pred = model.forward(x)
-                loss = criterion(pred, t)
-                batch_loss += loss
+            # print(batch_inputs, batch_targets)
 
-                optimizer.zero_grad()
-                grad = criterion.backward()
-                model.backward(grad)
-                optimizer.step()
+            y_pred = model.forward(batch_inputs)
+            batch_loss = criterion(y_pred, batch_targets)
+            grad = criterion.backward()
+            # print(grad.shape)
+            model.backward(grad)
+            optimizer.step()
 
-                predicted_class = 1.0 if pred[0] >= 0.5 else 0.0
-                if predicted_class == t[0]:
-                    total_correct += 1
-                total_samples += 1
+            # if epoch % 99 == 0:
+            #     print(f"total_correct : {total_correct}")
+            total_correct += np.sum((y_pred >= 0.5).flatten() == batch_targets)
+            total_samples += batch_targets.shape[0]
 
             total_loss += batch_loss
 
+        scheduler.step()
+        # print(f"total loss : {total_loss:.2f}")
         avg_loss = total_loss / total_samples
         accuracy = total_correct / total_samples * 100
 
-        if epoch % 10 == 0 or epoch == 99:
+        if epoch % 40 == 0 or epoch == 99:
+            # print(
+            #     f"Epoch {epoch} | total correct: {total_correct} | total samples: {total_samples} | accuracy: {accuracy:.2f}% | loss: {avg_loss:.2f}"
+            # )
             print(
                 f"Epoch {epoch:3d} | Loss: {avg_loss:.6f} | Train Accuracy: {accuracy:.1f}%"
             )
 
+    # print(optimizer.parameters)
+
     model.eval()
     correct = 0
-    for x, t in test_data:
-        pred = model.forward(x)
-        predicted_class = 1.0 if pred[0] >= 0.5 else 0.0
-        if predicted_class == t[0]:
-            correct += 1
-    test_accuracy = correct / len(test_data) * 100
-    print(f"\nTest Accuracy: {test_accuracy:.1f}% ({correct}/{len(test_data)})")
+
+    y_pred = model.forward(X_test)
+    correct = np.sum((y_pred >= 0.5).flatten() == y_test)
+
+    test_accuracy = correct / len(y_test) * 100
+    print(f"\nTest Accuracy: {test_accuracy:.1f}% ({correct}/{len(y_test)})")
 
     return model, test_accuracy
+
+
+if __name__ == "__main__":
+    train()

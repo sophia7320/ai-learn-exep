@@ -15,7 +15,7 @@ class Model:
         raise NotImplementedError()
 
     def parameters(self):
-        raise []
+        return []
 
     def __call__(self, *args, **kwargs):
         return self.forward(*args, **kwargs)

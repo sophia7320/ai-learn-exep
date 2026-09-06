@@ -10,7 +10,9 @@ class Linear(Model):
         self.fan_out = fan_out
 
         self.rng = rng if rng is not None else np.random.default_rng(42)
-        self.rng = rng if not isinstance(rng, int) else np.random.default_rng(rng)
+        self.rng = (
+            self.rng if not isinstance(self.rng, int) else np.random.default_rng(rng)
+        )
 
         self.weights = self.rng.normal(
             0, np.sqrt(2 / self.fan_in), (self.fan_in, self.fan_out)
@@ -23,12 +25,20 @@ class Linear(Model):
 
     def forward(self, X):
         self.X = X
+        # print(self.X.shape)
         return self.X @ self.weights + self.biases.reshape(1, -1)
 
     def backward(self, grad):
         n = len(grad)
-        self.weights_d = self.X.T @ grad / n
-        self.biases_d = np.mean(grad, axis=0)
+        # print(grad.shape)
+        # print(self.weights.shape)
+        self.weights_d[:] = self.X.T @ grad / n
+        self.biases_d[:] = np.mean(grad, axis=0)
+
+        # print(self.weights_d)
+
+        # return (self.weights @ grad.T).T
+        return grad @ self.weights.T
 
     def parameters(self):
         return [
