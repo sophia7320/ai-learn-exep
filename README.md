@@ -16,10 +16,13 @@
 | → Random Forest | ✅ | bootstrap + `sqrt` 特征子采样 + 多数投票 |
 | Phase 2: Deep Learning Core | 🔧 进行中 | |
 | → Two-Layer Network | ✅ | 手写反向传播，解决 XOR（对照线性模型不可分） |
-| → Multi-Layer Network | 🔧 | 矩阵化多层前向 + 手搓 XOR 权重演示（bias 位置待修） |
+| → Multi-Layer Network | 🔧 | 矩阵化多层前向 + 手搓 XOR 权重演示（bias 已修正，训练待接入 mini_frame） |
 | → Autograd Engine | ✅ | `Value` + 拓扑排序反向传播（micrograd 风格），XOR 收敛 |
 | → Activation & Loss | ✅ | 参数化网络（激活/损失可注入）+ 6 种激活函数对比实验 |
+| → Softmax Regression | ✅ | FashionMNIST 线性分类（PyTorch 训练，test 88.0%） |
 | → RMSProp Optimizer | ✅ | EMA(g²) 自适应步长 + 病态曲面轨迹 / 有效步长对比 |
+| → BPE Tokenizer | ✅ | 词元对合并迭代 + 新词子词切分演示 |
+| → Mini Framework | ✅ | numpy 从零实现 nn / optim / schedule / 正则化，圆数据 98.4% |
 | → ... | 📅 | 后续推进中 |
 
 ## 目录结构
@@ -28,7 +31,12 @@
 ai-learn-exep/
 ├── src/
 │   ├── util/
-│   │   └── Timer.py                    # 计时工具
+│   │   ├── timer.py                    # 计时工具
+│   │   ├── data_loader.py              # FashionMNIST 数据加载
+│   │   ├── animator.py                 # 训练曲线动态绘制
+│   │   └── deepvarlog/                 # 训练日志（装饰器 + 后台采样）
+│   ├── token/
+│   │   └── bpe.py                      # BPE 子词切分演示
 │   ├── ML/
 │   │   ├── intro/
 │   │   │   └── ml_intro.py             # Nearest Centroid + baseline + 数据划分
@@ -67,8 +75,15 @@ ai-learn-exep/
 │       ├── softmax/                    # softmax 回归（FashionMNIST + PyTorch）
 │       │   ├── model.py                # 线性层 + CrossEntropyLoss 训练
 │       │   └── test.py                 # FashionMNIST 分类
-│       └── optimizer/                  # 优化器
-│           └── rmsprop.py              # RMSProp 实现 + 病态曲面轨迹图
+│       ├── optimizer/                  # 优化器
+│       │   └── rmsprop.py              # RMSProp 实现 + 病态曲面轨迹图
+│       └── mini_frame/                 # numpy 迷你深度学习框架
+│           ├── nn/                     # Linear / Sequential / 激活函数 / 正则化
+│           ├── loss_fn/                # MSE / BCE
+│           ├── optim/                  # SGD / AdamW
+│           ├── schedule/               # cosine / one-cycle / step-decay / warmup
+│           ├── daraloader.py           # mini-batch 数据加载
+│           └── test.py                 # 圆数据二分类（98.4% test）
 ├── main.py
 ├── pyproject.toml                      # uv 项目配置（numpy / sklearn / torch）
 └── README.md
@@ -77,7 +92,7 @@ ai-learn-exep/
 ## 测试命令
 
 ```bash
-cd ~/Desktop/learning/ai-learn-exep
+cd ~/Desktop/ai-learning/ai-learn-exep
 
 # ML Intro（Nearest Centroid 演示）
 uv run python -m src.ML.intro.ml_intro
@@ -100,7 +115,7 @@ uv run python -m src.deep_learning.multi_layers.test
 # autograd 引擎（XOR / 圆环 + PyTorch 对照）
 uv run python -m src.deep_learning.backpropagation.test
 
-#softmax img
+# softmax：FashionMNIST 线性分类
 uv run python -m src.deep_learning.softmax.test
 
 # 激活函数 & 损失函数（梯度死区扫描 + 圆数据对照实验）
@@ -109,11 +124,54 @@ uv run python -m src.deep_learning.activation_and_loss.test
 # RMSProp 优化器（病态曲面轨迹 + 有效步长对比，图保存到 log/rmsprop_demo.png）
 uv run python -m src.deep_learning.optimizer.rmsprop
 
-# mini_frame
+# mini_frame（圆数据二分类，测试准确率 98.4%）
 uv run python -m src.deep_learning.mini_frame.test
+
+# BPE 子词切分演示
+uv run python -m src.token.bpe
 ```
 
 > 使用 `python -m` 模块方式运行（相对导入要求包上下文，不能直接 `python xxx.py`）。
+
+## Mini Framework（mini_frame）
+
+用 numpy 从零实现的最小深度学习框架。目标不是性能，而是把 PyTorch 的骨架拆开重装一遍：`Layer → Sequential → 损失 → 优化器 → 学习率调度 → 正则化 → 数据加载 → 训练循环`。
+
+| 组件 | 内容 |
+|------|------|
+| `nn` | Model / Sequential / Linear / ReLU / GeLU / Sigmoid |
+| `loss_fn` | MSE / BCE（支持 sum / mean） |
+| `optim` | SGD / AdamW（偏差修正 + 解耦 weight decay） |
+| `schedule` | Cosine / OneCycle / StepDecay / Warmup |
+| `regularization` | BatchNorm / LayerNorm / RMS / Dropout（train / eval 两态） |
+| `daraloader` | mini-batch 切分 + shuffle |
+
+验证方式：
+
+- 每个层的 `backward` 都用**数值梯度** `(f(x+ε) − f(x−ε)) / 2ε` 对照，核心层误差在 `1e-10` 量级；
+- 圆数据二分类（2→16→16→8→1，GeLU + LayerNorm + Dropout + AdamW + Cosine）：**测试准确率 98.4%**。
+
+```python
+model = nn.Sequential(
+    nn.Linear(2, 16, rng=rng), nn.GeLU(), LayerNorm(),
+    nn.Linear(16, 16, rng=rng), nn.GeLU(), Dropout(0.5, rng=rng),
+    nn.Linear(16, 8, rng=rng), nn.GeLU(),
+    nn.Linear(8, 1, rng=rng), nn.Sigmoid(),
+)
+criterion = BCELoss(reduction="sum")
+optimizer = optim.AdamW(model.parameters(), lr=0.01)
+scheduler = Cosine(optimizer, total_steps=20000)
+
+model.train()
+for X, y in DataLoader((X_train, y_train), batch_size=64, shuffle=True):
+    pred = model.forward(X)
+    loss = criterion(pred, y)
+    model.backward(criterion.backward())
+    optimizer.step()
+    scheduler.step()
+```
+
+已知简化：BatchNorm 的 eval 分支目前会混入当前 batch 的统计量，标准实现应只使用训练时累积的 moving stats（待修）。
 
 ## 实现约定
 
@@ -123,3 +181,5 @@ uv run python -m src.deep_learning.mini_frame.test
 - **数据泄漏**：train/test 拆分后，训练循环只能喂训练集——`fit(X_train, y_train)`，测试集碰过之后 test accuracy 无效
 - **验证方式**：每个模型都与 scikit-learn / PyTorch 对应实现对照（准确率 / 特征重要性等）
 - **随机种子**：测试数据固定 `default_rng(42)`；模型内部通过 `random_state` 参数控制，且种子只应在构造时设置一次（不要在循环内重置）
+- **mini_frame 层接口**：`forward` 缓存输入/中间量供 backward 使用；`backward(grad)` 返回对输入的梯度，同时把参数梯度写入 `*_d`；优化器通过 `parameters()` 拿到 `(param, grad, is_weight)` 三元组
+- **新层上线前先做数值梯度检验**：用 `(f(x+ε) − f(x−ε)) / 2ε` 对照手写 backward，误差大于 `1e-6` 就先查 backward，不要直接拿去训练
