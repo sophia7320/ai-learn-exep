@@ -141,7 +141,7 @@ class DecisionTree:
 
         for feature in feature_indices:
             X_col = X[:, feature]
-            X_uq = np.unique(X_col)
+            X_uq = np.unique(X_col)  # auto sorted
             for i in range(X_uq.shape[0] - 1):
                 threshold = (X_uq[i] + X_uq[i + 1]) / 2
 
