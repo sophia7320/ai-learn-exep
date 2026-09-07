@@ -39,9 +39,9 @@ def accuracy(data_test, model: Softmax_classify):
 def test():
     data_train, data_test = data_loader.load_data("fashionmnist", 256)
 
-    model = Softmax_classify(28 * 28, 10, lr=0.005)
+    model = Softmax_classify(28 * 28, 10, lr=0.00006)
     # model.fit(data_train, epochs=20001, print_every=500)
-    model.fit(data_train, epochs=31, print_every=10)
+    model.fit(data_train, epochs=161, print_every=20)
 
     print(f"test : accuracy : {accuracy(data_test, model)}")
 

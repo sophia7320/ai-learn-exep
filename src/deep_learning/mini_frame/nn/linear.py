@@ -29,11 +29,9 @@ class Linear(Model):
         return self.X @ self.weights + self.biases.reshape(1, -1)
 
     def backward(self, grad):
-        n = len(grad)
-        # print(grad.shape)
         # print(self.weights.shape)
-        self.weights_d[:] = self.X.T @ grad / n
-        self.biases_d[:] = np.mean(grad, axis=0)
+        self.weights_d[:] = self.X.T @ grad
+        self.biases_d[:] = np.sum(grad, axis=0)
 
         # print(self.weights_d)
 

@@ -31,13 +31,23 @@ def load_data(name: str, batch_size: int):
 
 
 def load_fashionmnist_data() -> tuple[torch.Tensor, torch.Tensor]:
-    trans = transforms.ToTensor()
+    trans_train = transforms.Compose(
+        [
+            transforms.RandomRotation(15),  # 随机旋转 -15 到 15 度
+            transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),  # 随机平移
+            transforms.ToTensor(),
+            transforms.Normalize((0.1307,), (0.3081,)),
+        ]
+    )
+
+    trans_test = transforms.ToTensor()
+
     print("loading data .....")
     minist_train = torchvision.datasets.FashionMNIST(
-        root="./data", train=True, transform=trans, download=True
+        root="./data", train=True, transform=trans_train, download=True
     )
     minist_test = torchvision.datasets.FashionMNIST(
-        root="./data", train=False, transform=trans, download=True
+        root="./data", train=False, transform=trans_test, download=True
     )
 
     print("tensoring.....")

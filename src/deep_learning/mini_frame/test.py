@@ -35,7 +35,7 @@ def train():
     optimizer = optim.AdamW(model.parameters(), lr=0.01)
     # optimizer = optim.SGD(model.parameters(), lr=0.05)
 
-    scheduler = Cosine(optimizer, total_steps=10000)
+    scheduler = Cosine(optimizer, total_steps=1001)
 
     X, y = make_circle_data(5000)
     split = int(len(y) * 0.8)
@@ -46,7 +46,7 @@ def train():
 
     model.train()
 
-    for epoch in range(1000):
+    for epoch in range(1001):
         total_loss = 0
         total_correct = 0
         total_samples = 0
