@@ -27,7 +27,10 @@ class RMS(Model):
 
         return (
             grad * self.gamma / self.rms
-            - np.mean(grad * self.X_hat, axis=1, keepdims=True) * self.X_hat / self.rms
+            - self.gamma
+            * np.mean(grad * self.X_hat, axis=1, keepdims=True)
+            * self.X_hat
+            / self.rms
         )
 
     def parameters(self):
